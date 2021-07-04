@@ -3,8 +3,10 @@
 #include "JSON.h"
 #include <vector>
 
+#define NULL_CONTAINER_CONTENT "\nnull\n"
+
 JSONEncodeContainer::JSONEncodeContainer() {
-    
+    this->type = CoderType::json;
 }
 
 void jsonDebeautify(string& content) {
@@ -50,27 +52,34 @@ vector<string> split(string content, char splitter, bool onlyGlobal = false, boo
 }
 
 JSONDecodeContainer::JSONDecodeContainer(string key, string content) {
+    this->type = CoderType::json;
     this->key = key;
+    if(content == NULL_CONTAINER_CONTENT) {
+        this->content = content;
+        return;
+    }
+    JSONDecodeContainer nullContainer = JSONDecodeContainer("", NULL_CONTAINER_CONTENT);
+    this->nullContainer = &nullContainer;
     jsonDebeautify(content);
     if (content.length() < 2) {
         return;
     }
     else {
         if (content[0] == '{') {
-            this->type = DecodeContainerType::closure;
+            this->parsedType = DecodeContainerType::closure;
             content.erase(content.begin());
             content.erase(content.end() - 1);
         }
         else if (content[0] == '[') {
-            this->type = DecodeContainerType::array;
+            this->parsedType = DecodeContainerType::array;
             content.erase(content.begin());
             content.erase(content.end() - 1);
         }
         else {
-            this->type = DecodeContainerType::variable;
+            this->parsedType = DecodeContainerType::variable;
         }
         this->content = content;
-        if (this->type == DecodeContainerType::variable) {
+        if (this->parsedType == DecodeContainerType::variable) {
             return;
         }
         auto splitted = split(content, ',', true, true);

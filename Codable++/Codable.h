@@ -3,12 +3,15 @@
 #include <string>
 typedef std::string CodingKey;
 
-class CoderContainer {
-    
-};
-
 enum CoderType {
     json
+};
+
+class CoderContainer {
+public:
+    CoderType type;
+    
+    virtual ~CoderContainer() {}
 };
 
 class Encoder {
@@ -26,6 +29,7 @@ public:
 class Codable {
 public:
     virtual void encode(Encoder* encoder) = 0;
+    virtual void decode(CoderContainer* container) = 0;
 };
 
 #endif

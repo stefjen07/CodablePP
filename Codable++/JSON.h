@@ -6,9 +6,9 @@
 
 using namespace std;
 
-class JSONContainer: CoderContainer {
+class JSONContainer: public CoderContainer {
 public:
-    std::string content();
+    string content();
 };
 
 class JSONEncodeContainer: public JSONContainer {
@@ -27,26 +27,45 @@ enum class DecodeContainerType {
     array
 };
 
-class JSONDecodeContainer: JSONContainer {
+class JSONDecodeContainer: public JSONContainer {
 public:
     vector<JSONDecodeContainer*> children = vector<JSONDecodeContainer*>(0);
     string key;
     string content;
-    DecodeContainerType type;
+    DecodeContainerType parsedType;
     JSONDecodeContainer* nullContainer;
     
-    template <typename T>
-    T decode(T type, CodingKey key) {
-        return type;
-    }
-
-    JSONDecodeContainer& operator [](string key) {
+    JSONDecodeContainer& getChild(string key) {
         for (int i = 0; i < children.size(); i++) {
             if (children[i]->key == key) {
                 return *children[i];
             }
         }
         return *nullContainer;
+    }
+    
+    JSONDecodeContainer& operator [](string key) {
+        return getChild(key);
+    }
+    
+    string decode(string type, CodingKey key) {
+        string value = getChild(key).content;
+        if(value.length()>1) {
+            if(value[0] == '\"' && value[value.length()-1] == '\"') {
+                value.erase(value.begin());
+                value.erase(value.begin()+value.length()-1);
+            }
+        }
+        return value;
+    }
+    
+    template <typename T>
+    T decode(T type, CodingKey key) {
+        if (is_polymorphic<T>::value) {
+            Codable* casted = dynamic_cast<Codable*>(&type);
+            casted->decode(this);
+        }
+        return type;
     }
 
     JSONDecodeContainer(string content);
@@ -60,7 +79,7 @@ public:
 
 class JSONDecoder: Decoder {
 public:
-    JSONDecodeContainer container(std::string content);
+    JSONDecodeContainer container(string content);
 };
 
 #endif

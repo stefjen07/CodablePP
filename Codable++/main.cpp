@@ -10,7 +10,7 @@ CodingKey keys[] = {
     "phoneNumber"
 };
 
-class Contact: Codable {
+class Contact: public Codable {
 public:
     
     void encode(Encoder* encoder) {
@@ -19,6 +19,14 @@ public:
             JSONEncodeContainer container = jsonEncoder->container(keys, keysAmount);
             container.encode(name, "name");
             container.encode(phoneNumber, "phoneNumber");
+        }
+    }
+    
+    void decode(CoderContainer* container) {
+        if(container->type == CoderType::json) {
+            JSONDecodeContainer *jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
+            this->name = jsonContainer->decode(string(), "name");
+            this->phoneNumber = jsonContainer->decode(string(), "phoneNumber");
         }
     }
     
@@ -32,11 +40,6 @@ public:
     Contact(string name, string phoneNumber) {
         this->name = name;
         this->phoneNumber = phoneNumber;
-    }
-    
-    Contact(JSONDecodeContainer container) {
-        this->name = container.decode(string(), "name");
-        this->phoneNumber = container.decode(string(), "phoneNumber");
     }
 };
 
