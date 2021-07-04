@@ -1,3 +1,1 @@
-class Codable {
-
-};
+#include "Codable.h"

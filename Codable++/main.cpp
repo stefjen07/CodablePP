@@ -1,18 +1,52 @@
 #include "JSON.h"
 #include "Codable.h"
+#include <iostream>
 using namespace std;
 
-CodingKey* keys = {};
+const unsigned keysAmount = 2;
 
-class Contact {
-	string phoneNumber;
-	string name;
+CodingKey keys[] = {
+    "name",
+    "phoneNumber"
+};
+
+class Contact: Codable {
+public:
+    
+    void encode(Encoder* encoder) {
+        if(encoder->type == CoderType::json) {
+            JSONEncoder *jsonEncoder = dynamic_cast<JSONEncoder*>(encoder);
+            JSONEncodeContainer container = jsonEncoder->container(keys, keysAmount);
+            container.encode(name, "name");
+            container.encode(phoneNumber, "phoneNumber");
+        }
+    }
+    
+    string phoneNumber;
+    string name;
+
+    Contact() {
+        
+    }
+
+    Contact(string name, string phoneNumber) {
+        this->name = name;
+        this->phoneNumber = phoneNumber;
+    }
+    
+    Contact(JSONDecodeContainer container) {
+        this->name = container.decode(string(), "name");
+        this->phoneNumber = container.decode(string(), "phoneNumber");
+    }
 };
 
 int main() {
 	JSONEncoder encoder;
+    auto encodeContainer = encoder.container(keys, keysAmount);
+    encodeContainer.encode(Contact("Eugene", "123456789"), "contact");
 	JSONDecoder decoder;
-	decoder.container(keys);
-	//auto container = decoder.container(keys);
+	auto container = decoder.container("{}", keys, keysAmount);
+    auto contact = container.decode(Contact(), "contact");
+    cout << contact.name << " " << contact.phoneNumber;
 	return 0;
 }

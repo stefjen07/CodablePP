@@ -3,20 +3,41 @@
 #include "Codable.h"
 #include <string>
 
-class JSONContainer {
+class JSONContainer: CoderContainer {
 public:
-	std::string content();
+    std::string content();
+};
 
-	template<class T>
-	T decode(T type, CodingKey key);
-};
-class JSONEncoder {
+class JSONEncodeContainer: JSONContainer {
 public:
-	JSONContainer container(CodingKey* keys);
+    template <typename T>
+    void encode(T value, CodingKey key) {
+        return;
+    }
+
+    JSONEncodeContainer();
 };
-class JSONDecoder {
+
+class JSONDecodeContainer: JSONContainer {
 public:
-	JSONContainer container(CodingKey* keys);
+    JSONDecodeContainer* childs[];
+    
+    template <typename T>
+    T decode(T type, CodingKey key) {
+        return type;
+    }
+
+    JSONDecodeContainer(std::string content);
+};
+
+class JSONEncoder: Encoder {
+public:
+    JSONEncodeContainer container(CodingKey keys[], unsigned keysAmount);
+};
+
+class JSONDecoder: Decoder {
+public:
+    JSONDecodeContainer container(std::string content, CodingKey keys[], unsigned keysAmount);
 };
 
 #endif
