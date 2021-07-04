@@ -44,8 +44,10 @@ int main() {
 	JSONEncoder encoder;
     auto encodeContainer = encoder.container(keys, keysAmount);
     encodeContainer.encode(Contact("Eugene", "123456789"), "contact");
+    cout << encodeContainer.content() << endl;
 	JSONDecoder decoder;
-	auto container = decoder.container("{}", keys, keysAmount);
+	auto container = decoder.container("{\"name\": \"Eugene\", \"phoneNumber\": \"123456789\"}");
+    cout << container.content << endl;
     auto contact = container.decode(Contact(), "contact");
     cout << contact.name << " " << contact.phoneNumber;
 	return 0;

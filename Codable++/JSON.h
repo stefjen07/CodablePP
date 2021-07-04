@@ -2,13 +2,16 @@
 #define JSON_H
 #include "Codable.h"
 #include <string>
+#include <vector>
+
+using namespace std;
 
 class JSONContainer: CoderContainer {
 public:
     std::string content();
 };
 
-class JSONEncodeContainer: JSONContainer {
+class JSONEncodeContainer: public JSONContainer {
 public:
     template <typename T>
     void encode(T value, CodingKey key) {
@@ -18,16 +21,36 @@ public:
     JSONEncodeContainer();
 };
 
+enum class DecodeContainerType {
+    closure,
+    variable,
+    array
+};
+
 class JSONDecodeContainer: JSONContainer {
 public:
-    JSONDecodeContainer* childs[];
+    vector<JSONDecodeContainer*> children = vector<JSONDecodeContainer*>(0);
+    string key;
+    string content;
+    DecodeContainerType type;
+    JSONDecodeContainer* nullContainer;
     
     template <typename T>
     T decode(T type, CodingKey key) {
         return type;
     }
 
-    JSONDecodeContainer(std::string content);
+    JSONDecodeContainer& operator [](string key) {
+        for (int i = 0; i < children.size(); i++) {
+            if (children[i]->key == key) {
+                return *children[i];
+            }
+        }
+        return *nullContainer;
+    }
+
+    JSONDecodeContainer(string content);
+    JSONDecodeContainer(string key, string content);
 };
 
 class JSONEncoder: Encoder {
@@ -37,7 +60,7 @@ public:
 
 class JSONDecoder: Decoder {
 public:
-    JSONDecodeContainer container(std::string content, CodingKey keys[], unsigned keysAmount);
+    JSONDecodeContainer container(std::string content);
 };
 
 #endif

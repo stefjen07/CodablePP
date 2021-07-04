@@ -1,4 +1,2 @@
-﻿  main.cpp
-C:\Users\stefj\source\repos\Codable++\Codable++\main.cpp(13,14): warning C4101: encoder: неиспользованная локальная переменная
-main.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: class JSONContainer __cdecl JSONDecoder::container(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > *)" (?container@JSONDecoder@@QEAA?AVJSONContainer@@PEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z) в функции main.
-C:\Users\stefj\source\repos\Codable++\x64\Debug\Codable++.exe : fatal error LNK1120: неразрешенных внешних элементов: 1
+﻿  JSON.cpp
+  Codable++.vcxproj -> C:\Users\stefj\OneDrive\Documents\GitHub\Codable-\x64\Debug\Codable++.exe

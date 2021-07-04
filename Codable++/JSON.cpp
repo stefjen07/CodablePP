@@ -2,24 +2,21 @@
 #include "Codable.h"
 #include "JSON.h"
 #include <vector>
-using namespace std;
 
 JSONEncodeContainer::JSONEncodeContainer() {
     
 }
 
-void jsonDebeautify(string* content) {
+void jsonDebeautify(string& content) {
     bool isInValue = false;
-    string contentCopy = content->data();
-    for(int i=0;i<content->length();i++) {
-        if((contentCopy[i] == ' ' || contentCopy[i] == '\n') && !isInValue) {
-            contentCopy.erase(contentCopy.begin() + i--);
-        }
-        if(contentCopy[i] == '\"') {
+    for(int i=0;i<content.length();i++) {
+        if (content[i] == '\"') {
             isInValue = !isInValue;
         }
+        if((content[i] == ' ' || content[i] == '\n') && !isInValue) {
+            content.erase(content.begin() + i--);
+        }
     }
-    content = &contentCopy;
 }
 
 vector<string> split(string content, char splitter, bool onlyGlobal = false, bool onlyNonValue = false) {
@@ -52,22 +49,40 @@ vector<string> split(string content, char splitter, bool onlyGlobal = false, boo
     return result;
 }
 
-JSONDecodeContainer::JSONDecodeContainer(string content) {
-    jsonDebeautify(&content);
-    if(content.length() < 2) {
+JSONDecodeContainer::JSONDecodeContainer(string key, string content) {
+    this->key = key;
+    jsonDebeautify(content);
+    if (content.length() < 2) {
         return;
-    } else {
-        if(content[0] == '{') {
+    }
+    else {
+        if (content[0] == '{') {
+            this->type = DecodeContainerType::closure;
             content.erase(content.begin());
-            content.erase(content.end()-1);
+            content.erase(content.end() - 1);
+        }
+        else if (content[0] == '[') {
+            this->type = DecodeContainerType::array;
+            content.erase(content.begin());
+            content.erase(content.end() - 1);
+        }
+        else {
+            this->type = DecodeContainerType::variable;
+        }
+        this->content = content;
+        if (this->type == DecodeContainerType::variable) {
+            return;
         }
         auto splitted = split(content, ',', true, true);
-        for(int i=0;i<splitted.size();i++) {
+        for (int i = 0; i < splitted.size(); i++) {
             auto keyval = split(splitted[i], ':', true, true);
-            //
+            JSONDecodeContainer child(keyval[0], keyval[1]);
+            this->children.push_back(&child);
         }
     }
 }
+
+JSONDecodeContainer::JSONDecodeContainer(string content) : JSONDecodeContainer::JSONDecodeContainer("main", content) {}
 
 string JSONContainer::content() {
     return "";
@@ -77,6 +92,6 @@ JSONEncodeContainer JSONEncoder::container(CodingKey keys[], unsigned keysAmount
     return JSONEncodeContainer();
 }
 
-JSONDecodeContainer JSONDecoder::container(string content, CodingKey keys[], unsigned keysAmount) {
+JSONDecodeContainer JSONDecoder::container(string content) {
     return JSONDecodeContainer(content);
 }
