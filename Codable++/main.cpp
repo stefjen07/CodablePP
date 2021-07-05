@@ -10,34 +10,60 @@ CodingKey keys[] = {
     "phoneNumber"
 };
 
-class Contact: public Codable {
+class PhoneNumber: public Codable {
 public:
     
-    void encode(Encoder* encoder) {
-        if(encoder->type == CoderType::json) {
-            JSONEncoder *jsonEncoder = dynamic_cast<JSONEncoder*>(encoder);
-            JSONEncodeContainer container = jsonEncoder->container(keys, keysAmount);
-            container.encode(name, "name");
-            container.encode(phoneNumber, "phoneNumber");
+    void encode(CoderContainer* container) {
+        if(container->type == CoderType::json) {
+            JSONEncodeContainer* jsonContainer = dynamic_cast<JSONEncodeContainer*>(container);
+            jsonContainer->encode(countryCode, "country");
+            jsonContainer->encode(number, "number");
         }
     }
     
     void decode(CoderContainer* container) {
         if(container->type == CoderType::json) {
             JSONDecodeContainer *jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
-            this->name = jsonContainer->decode(string(), "name");
-            this->phoneNumber = jsonContainer->decode(string(), "phoneNumber");
+            this->countryCode = jsonContainer->decode(string(), "country");
+            this->number = jsonContainer->decode(string(), "number");
         }
     }
     
-    string phoneNumber;
-    string name;
+    string countryCode;
+    string number;
+    
+    PhoneNumber() {}
+    
+    PhoneNumber(string countryCode, string number) {
+        this->countryCode = countryCode;
+        this->number = number;
+    }
+};
 
-    Contact() {
-        
+class Contact: public Codable {
+public:
+    string name;
+    PhoneNumber phoneNumber;
+    
+    void encode(CoderContainer* container) {
+        if(container->type == CoderType::json) {
+            JSONEncodeContainer* jsonContainer = dynamic_cast<JSONEncodeContainer*>(container);
+            jsonContainer->encode(name, "name");
+            jsonContainer->encode(phoneNumber, "phoneNumber");
+        }
+    }
+    
+    void decode(CoderContainer* container) {
+        if(container->type == CoderType::json) {
+            JSONDecodeContainer *jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
+            name = jsonContainer->decode(string(), "name");
+            phoneNumber = jsonContainer->decode(PhoneNumber(), "phoneNumber");
+        }
     }
 
-    Contact(string name, string phoneNumber) {
+    Contact() {}
+
+    Contact(string name, PhoneNumber phoneNumber) {
         this->name = name;
         this->phoneNumber = phoneNumber;
     }
@@ -46,12 +72,12 @@ public:
 int main() {
 	JSONEncoder encoder;
     auto encodeContainer = encoder.container(keys, keysAmount);
-    encodeContainer.encode(Contact("Eugene", "123456789"), "contact");
+    encodeContainer.encode(Contact("Eugene", PhoneNumber("123","456789")), "contact");
     cout << encodeContainer.content() << endl;
 	JSONDecoder decoder;
-	auto container = decoder.container("{\"name\": \"Eugene\", \"phoneNumber\": \"123456789\"}");
+	auto container = decoder.container("{\"name\": \"Eugene\", \"phoneNumber\": {\"country\": \"123\", \"number\": \"123456789\"}}");
     cout << container.content << endl;
-    auto contact = container.decode(Contact(), "contact");
-    cout << contact.name << " " << contact.phoneNumber;
+    auto contact = container.decode(Contact());
+    cout << contact.name << " " << contact.phoneNumber.countryCode << " " << contact.phoneNumber.number;
 	return 0;
 }

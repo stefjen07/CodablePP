@@ -15,7 +15,7 @@ void jsonDebeautify(string& content) {
         if (content[i] == '\"') {
             isInValue = !isInValue;
         }
-        if((content[i] == ' ' || content[i] == '\n') && !isInValue) {
+        if ((content[i] == ' ' || content[i] == '\n') && !isInValue) {
             content.erase(content.begin() + i--);
         }
     }

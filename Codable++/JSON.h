@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#define MAIN_CONTAINER_KEY ""
+
 using namespace std;
 
 class JSONContainer: public CoderContainer {
@@ -13,8 +15,17 @@ public:
 
 class JSONEncodeContainer: public JSONContainer {
 public:
+    
+    string encode(string value, CodingKey key) {
+        return "\""+value+"\"";
+    }
+    
     template <typename T>
     void encode(T value, CodingKey key) {
+        if (is_polymorphic<T>::value) {
+            Codable* casted = dynamic_cast<Codable*>(&value);
+            casted->encode(this);
+        }
         return;
     }
 
@@ -62,9 +73,18 @@ public:
     T decode(T type, CodingKey key) {
         if (is_polymorphic<T>::value) {
             Codable* casted = dynamic_cast<Codable*>(&type);
-            casted->decode(this);
+            CoderContainer* container = static_cast<CoderContainer*>(&getChild(key));
+            if (key == MAIN_CONTAINER_KEY) {
+                container = static_cast<CoderContainer*>(this);
+            }
+            casted->decode(container);
         }
         return type;
+    }
+    
+    template<typename T>
+    T decode(T type) {
+        return decode(type, MAIN_CONTAINER_KEY);
     }
 
     JSONDecodeContainer(string content, vector<JSONDecodeContainer>* containers);

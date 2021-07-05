@@ -28,8 +28,8 @@ public:
 
 class Codable {
 public:
-    virtual void encode(Encoder* encoder) = 0;
-    virtual void decode(CoderContainer* container) = 0;
+    virtual void encode(CoderContainer* container) {};
+    virtual void decode(CoderContainer* container) {};
 };
 
 #endif
