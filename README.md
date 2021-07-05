@@ -3,6 +3,11 @@ This C++ library provides with Codable protocol from Swift.<br>
 It may be useful if you have C++ server for iOS or macOS application.<br>
 Library methods have very similar syntax to Swift's version.
 ## Documentation
+Before using encoding and decoding methods and Codable class, you must add 2 libraries to include part of your code:<br>
+```c++
+#include "Codable.h"
+#include "JSON.h"
+```
 If you want make class Codable as you do in Swift, you must choose Codable class as a base class.<br>
 For example, if you have class PhoneBook, then its Codable version will look like this:<br>
 ```c++
