@@ -2,6 +2,7 @@
 #include "Codable.h"
 #include "JSON.h"
 #include <vector>
+#include <sstream>
 
 JSONEncodeContainer::JSONEncodeContainer(vector<JSONEncodeContainer>* containers) {
     this->type = CoderType::json;
@@ -11,6 +12,37 @@ JSONEncodeContainer::JSONEncodeContainer(vector<JSONEncodeContainer>* containers
 JSONEncodeContainer::JSONEncodeContainer(string key, string content, vector<JSONEncodeContainer>* containers) : JSONEncodeContainer::JSONEncodeContainer(containers) {
     this->key = key;
     this->content = content;
+}
+
+void JSONEncodeContainer::encode(bool value, CodingKey key) {
+    JSONEncodeContainer result(key, "", containers);
+    result.value = value ? "true" : "false";
+    result.encodingType = JSONContainerType::variable;
+    result.generateContent();
+    containers->push_back(result);
+    childrenIndexes.push_back(containers->size() - 1);
+}
+
+void JSONEncodeContainer::encode(int value, CodingKey key) {
+    JSONEncodeContainer result(key, "", containers);
+    stringstream ss;
+    ss << value;
+    ss >> result.value;
+    result.encodingType = JSONContainerType::variable;
+    result.generateContent();
+    containers->push_back(result);
+    childrenIndexes.push_back(containers->size() - 1);
+}
+
+void JSONEncodeContainer::encode(float value, CodingKey key) {
+    JSONEncodeContainer result(key, "", containers);
+    stringstream ss;
+    ss << value;
+    ss >> result.value;
+    result.encodingType = JSONContainerType::variable;
+    result.generateContent();
+    containers->push_back(result);
+    childrenIndexes.push_back(containers->size() - 1);
 }
 
 void JSONEncodeContainer::encode(string value, CodingKey key) {
@@ -111,6 +143,41 @@ JSONDecodeContainer::JSONDecodeContainer(string key, string content, vector<JSON
 }
 
 JSONDecodeContainer::JSONDecodeContainer(string content, vector<JSONDecodeContainer>* containers) : JSONDecodeContainer::JSONDecodeContainer("main", content, containers) {}
+
+bool JSONDecodeContainer::decode(bool type, CodingKey key) {
+    JSONDecodeContainer* child = getChild(key);
+    if(child == NULL) {
+        return type;
+    }
+    string value = child->content;
+    return value == "true";
+}
+
+int JSONDecodeContainer::decode(int type, CodingKey key) {
+    JSONDecodeContainer* child = getChild(key);
+    if(child == NULL) {
+        return type;
+    }
+    string value = child->content;
+    stringstream ss;
+    ss << value;
+    int result;
+    ss >> result;
+    return result;
+}
+
+float JSONDecodeContainer::decode(float type, CodingKey key) {
+    JSONDecodeContainer* child = getChild(key);
+    if(child == NULL) {
+        return type;
+    }
+    string value = child->content;
+    stringstream ss;
+    ss << value;
+    int result;
+    ss >> result;
+    return result;
+}
 
 string JSONDecodeContainer::decode(string type, CodingKey key) {
     JSONDecodeContainer* child = getChild(key);

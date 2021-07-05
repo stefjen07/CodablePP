@@ -72,6 +72,9 @@ public:
         childrenIndexes.push_back(containers->size()-1);
     }
 
+    void encode(bool value, CodingKey key);
+    void encode(int value, CodingKey key);
+    void encode(float value, CodingKey key);
     void encode(string value, CodingKey key);
 
     template <typename T>
@@ -122,6 +125,9 @@ public:
         return getChild(key);
     }
     
+    bool decode(bool type, CodingKey key);
+    int decode(int type, CodingKey key);
+    float decode(float type, CodingKey key);
     string decode(string type, CodingKey key);
 
     template <class T>

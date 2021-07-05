@@ -5,8 +5,8 @@ using namespace std;
 
 class PhoneNumber: public Codable {
 public:
-    string countryCode;
-    string number;
+    int countryCode;
+    int number;
     
     void encode(CoderContainer* container) {
         if(container->type == CoderType::json) {
@@ -19,14 +19,14 @@ public:
     void decode(CoderContainer* container) {
         if(container->type == CoderType::json) {
             JSONDecodeContainer* jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
-            this->countryCode = jsonContainer->decode(string(), "country");
-            this->number = jsonContainer->decode(string(), "number");
+            this->countryCode = jsonContainer->decode(int(), "country");
+            this->number = jsonContainer->decode(int(), "number");
         }
     }
     
     PhoneNumber() {}
     
-    PhoneNumber(string countryCode, string number) {
+    PhoneNumber(int countryCode, int number) {
         this->countryCode = countryCode;
         this->number = number;
     }
@@ -87,7 +87,7 @@ public:
 };
 
 int main() {
-    Contact eugene = Contact("Eugene", PhoneNumber("123", "456789"));
+    Contact eugene = Contact("Eugene", PhoneNumber(123, 456789));
     vector<Contact> contacts = { eugene };
     PhoneBook book(contacts);
 	JSONEncoder encoder;
