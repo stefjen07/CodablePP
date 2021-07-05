@@ -90,6 +90,7 @@ public:
 
     template <typename T>
     void encode(T value) {
+        encodingType = JSONContainerType::closure;
         if (is_polymorphic<T>::value) {
             Codable* casted = dynamic_cast<Codable*>(&value);
             casted->encode(this);
@@ -108,16 +109,16 @@ public:
     JSONContainerType parsedType;
     JSONDecodeContainer* nullContainer;
     
-    JSONDecodeContainer& getChild(string key) {
+    JSONDecodeContainer* getChild(string key) {
         for (int i = 0; i < childrenIndexes.size(); i++) {
             if (containers->data()[childrenIndexes[i]].key == key) {
-                return containers->data()[childrenIndexes[i]];
+                return &containers->data()[childrenIndexes[i]];
             }
         }
-        return *nullContainer;
+        return nullContainer;
     }
     
-    JSONDecodeContainer& operator [](string key) {
+    JSONDecodeContainer* operator [](string key) {
         return getChild(key);
     }
     
@@ -126,10 +127,14 @@ public:
     template <class T>
     vector<T> decode(vector<T> type, CodingKey key) {
         vector<T> result;
-        for (int i = 0; i < childrenIndexes.size(); i++) {
+        auto array = getChild(key);
+        if (array == NULL) {
+            return result;
+        }
+        for (int i = 0; i < array->childrenIndexes.size(); i++) {
             T item = T();
             Codable* casted = dynamic_cast<Codable*>(&item);
-            CoderContainer* container = static_cast<CoderContainer*>(&containers->data()[childrenIndexes[i]]);
+            CoderContainer* container = static_cast<CoderContainer*>(&containers->data()[array->childrenIndexes[i]]);
             if (container != NULL) {
                 casted->decode(container);
             }
@@ -142,7 +147,7 @@ public:
     T decode(T type, CodingKey key) {
         if (is_polymorphic<T>::value) {
             Codable* casted = dynamic_cast<Codable*>(&type);
-            JSONDecodeContainer* jsonContainer = &getChild(key);
+            JSONDecodeContainer* jsonContainer = getChild(key);
             if (jsonContainer != NULL) {
                 CoderContainer* container = static_cast<CoderContainer*>(jsonContainer);
                 if (key == MAIN_CONTAINER_KEY) {

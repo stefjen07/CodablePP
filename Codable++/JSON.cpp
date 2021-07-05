@@ -3,8 +3,6 @@
 #include "JSON.h"
 #include <vector>
 
-#define NULL_CONTAINER_CONTENT "\nnull\n"
-
 JSONEncodeContainer::JSONEncodeContainer(vector<JSONEncodeContainer>* containers) {
     this->type = CoderType::json;
     this->containers = containers;
@@ -70,12 +68,6 @@ JSONDecodeContainer::JSONDecodeContainer(string key, string content, vector<JSON
     this->type = CoderType::json;
     this->key = key;
     this->containers = containers;
-    if(content == NULL_CONTAINER_CONTENT) {
-        this->content = content;
-        return;
-    }
-    JSONDecodeContainer nullContainer = JSONDecodeContainer("", NULL_CONTAINER_CONTENT, containers);
-    this->nullContainer = &nullContainer;
     jsonDebeautify(content);
     if (content.length() < 2) {
         return;
@@ -121,7 +113,11 @@ JSONDecodeContainer::JSONDecodeContainer(string key, string content, vector<JSON
 JSONDecodeContainer::JSONDecodeContainer(string content, vector<JSONDecodeContainer>* containers) : JSONDecodeContainer::JSONDecodeContainer("main", content, containers) {}
 
 string JSONDecodeContainer::decode(string type, CodingKey key) {
-    string value = getChild(key).content;
+    JSONDecodeContainer* child = getChild(key);
+    if(child == NULL) {
+        return type;
+    }
+    string value = child->content;
     if (value.length() > 1) {
         value.erase(value.begin());
         value.erase(value.begin() + value.length() - 1);

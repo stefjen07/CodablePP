@@ -94,12 +94,12 @@ int main() {
     auto encodeContainer = encoder.container();
     encodeContainer.encode(book);
     cout << encodeContainer.content << endl;
-	/*JSONDecoder decoder;
+	JSONDecoder decoder;
 	auto container = decoder.container(encodeContainer.content);
     auto decodeBook = container.decode(PhoneBook());
     for (int i = 0; i < decodeBook.contacts.size(); i++) {
         Contact contact = decodeBook.contacts[i];
         cout << contact.name << " " << contact.phoneNumber.countryCode << " " << contact.phoneNumber.number << endl;
-    }*/
+    }
 	return 0;
 }
