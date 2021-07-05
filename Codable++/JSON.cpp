@@ -5,8 +5,23 @@
 
 #define NULL_CONTAINER_CONTENT "\nnull\n"
 
-JSONEncodeContainer::JSONEncodeContainer() {
+JSONEncodeContainer::JSONEncodeContainer(vector<JSONEncodeContainer>* containers) {
     this->type = CoderType::json;
+    this->containers = containers;
+}
+
+JSONEncodeContainer::JSONEncodeContainer(string key, string content, vector<JSONEncodeContainer>* containers) : JSONEncodeContainer::JSONEncodeContainer(containers) {
+    this->key = key;
+    this->content = content;
+}
+
+void JSONEncodeContainer::encode(string value, CodingKey key) {
+    JSONEncodeContainer result(key, "", containers);
+    result.value = "\"" + value + "\"";
+    result.encodingType = JSONContainerType::variable;
+    result.generateContent();
+    containers->push_back(result);
+    childrenIndexes.push_back(containers->size() - 1);
 }
 
 void jsonDebeautify(string& content) {
@@ -67,28 +82,37 @@ JSONDecodeContainer::JSONDecodeContainer(string key, string content, vector<JSON
     }
     else {
         if (content[0] == '{') {
-            this->parsedType = DecodeContainerType::closure;
+            this->parsedType = JSONContainerType::closure;
             content.erase(content.begin());
             content.erase(content.end() - 1);
         }
         else if (content[0] == '[') {
-            this->parsedType = DecodeContainerType::array;
+            this->parsedType = JSONContainerType::array;
             content.erase(content.begin());
             content.erase(content.end() - 1);
         }
         else {
-            this->parsedType = DecodeContainerType::variable;
+            this->parsedType = JSONContainerType::variable;
         }
         this->content = content;
-        if (this->parsedType == DecodeContainerType::variable) {
+        if (this->parsedType == JSONContainerType::variable) {
             return;
         }
         auto splitted = split(content, ',', true, true);
         for (int i = 0; i < splitted.size(); i++) {
             auto keyval = split(splitted[i], ':', true, true);
-            keyval[0].erase(keyval[0].begin());
-            keyval[0].erase(keyval[0].end()-1);
-            containers->push_back(JSONDecodeContainer(keyval[0], keyval[1], containers));
+            string key = "";
+            string content = "";
+            if (keyval.size() > 1 && keyval[0].size() > 1) {
+                keyval[0].erase(keyval[0].begin());
+                keyval[0].erase(keyval[0].end() - 1);
+                key = keyval[0];
+                content = keyval[1];
+            }
+            else {
+                content = keyval[0];
+            }
+            containers->push_back(JSONDecodeContainer(key, content, containers));
             childrenIndexes.push_back(containers->size()-1);
         }
     }
@@ -96,12 +120,17 @@ JSONDecodeContainer::JSONDecodeContainer(string key, string content, vector<JSON
 
 JSONDecodeContainer::JSONDecodeContainer(string content, vector<JSONDecodeContainer>* containers) : JSONDecodeContainer::JSONDecodeContainer("main", content, containers) {}
 
-string JSONContainer::content() {
-    return "";
+string JSONDecodeContainer::decode(string type, CodingKey key) {
+    string value = getChild(key).content;
+    if (value.length() > 1) {
+        value.erase(value.begin());
+        value.erase(value.begin() + value.length() - 1);
+    }
+    return value;
 }
 
-JSONEncodeContainer JSONEncoder::container(CodingKey keys[], unsigned keysAmount) {
-    return JSONEncodeContainer();
+JSONEncodeContainer JSONEncoder::container() {
+    return JSONEncodeContainer(&containers);
 }
 
 JSONDecodeContainer JSONDecoder::container(string content) {

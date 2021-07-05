@@ -3,15 +3,10 @@
 #include <iostream>
 using namespace std;
 
-const unsigned keysAmount = 2;
-
-CodingKey keys[] = {
-    "name",
-    "phoneNumber"
-};
-
 class PhoneNumber: public Codable {
 public:
+    string countryCode;
+    string number;
     
     void encode(CoderContainer* container) {
         if(container->type == CoderType::json) {
@@ -23,14 +18,11 @@ public:
     
     void decode(CoderContainer* container) {
         if(container->type == CoderType::json) {
-            JSONDecodeContainer *jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
+            JSONDecodeContainer* jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
             this->countryCode = jsonContainer->decode(string(), "country");
             this->number = jsonContainer->decode(string(), "number");
         }
     }
-    
-    string countryCode;
-    string number;
     
     PhoneNumber() {}
     
@@ -69,15 +61,45 @@ public:
     }
 };
 
+class PhoneBook: public Codable {
+public:
+    vector<Contact> contacts;
+
+    void encode(CoderContainer* container) {
+        if (container->type == CoderType::json) {
+            JSONEncodeContainer* jsonContainer = dynamic_cast<JSONEncodeContainer*>(container);
+            jsonContainer->encode(contacts, "contacts");
+        }
+    }
+
+    void decode(CoderContainer* container) {
+        if (container->type == CoderType::json) {
+            JSONDecodeContainer* jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
+            contacts = jsonContainer->decode(vector<Contact>(), "contacts");
+        }
+    }
+
+    PhoneBook(vector<Contact> contacts) {
+        this->contacts = contacts;
+    }
+
+    PhoneBook() {}
+};
+
 int main() {
+    Contact eugene = Contact("Eugene", PhoneNumber("123", "456789"));
+    vector<Contact> contacts = { eugene };
+    PhoneBook book(contacts);
 	JSONEncoder encoder;
-    auto encodeContainer = encoder.container(keys, keysAmount);
-    encodeContainer.encode(Contact("Eugene", PhoneNumber("123","456789")), "contact");
-    cout << encodeContainer.content() << endl;
-	JSONDecoder decoder;
-	auto container = decoder.container("{\"name\": \"Eugene\", \"phoneNumber\": {\"country\": \"123\", \"number\": \"123456789\"}}");
-    cout << container.content << endl;
-    auto contact = container.decode(Contact());
-    cout << contact.name << " " << contact.phoneNumber.countryCode << " " << contact.phoneNumber.number;
+    auto encodeContainer = encoder.container();
+    encodeContainer.encode(book);
+    cout << encodeContainer.content << endl;
+	/*JSONDecoder decoder;
+	auto container = decoder.container(encodeContainer.content);
+    auto decodeBook = container.decode(PhoneBook());
+    for (int i = 0; i < decodeBook.contacts.size(); i++) {
+        Contact contact = decodeBook.contacts[i];
+        cout << contact.name << " " << contact.phoneNumber.countryCode << " " << contact.phoneNumber.number << endl;
+    }*/
 	return 0;
 }

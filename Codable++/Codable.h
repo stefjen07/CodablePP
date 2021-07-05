@@ -3,7 +3,7 @@
 #include <string>
 typedef std::string CodingKey;
 
-enum CoderType {
+enum class CoderType {
     json
 };
 
