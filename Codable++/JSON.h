@@ -154,11 +154,11 @@ public:
         if (is_polymorphic<T>::value) {
             Codable* casted = dynamic_cast<Codable*>(&type);
             JSONDecodeContainer* jsonContainer = getChild(key);
+            if (key == MAIN_CONTAINER_KEY) {
+                jsonContainer = this;
+            }
             if (jsonContainer != NULL) {
                 CoderContainer* container = static_cast<CoderContainer*>(jsonContainer);
-                if (key == MAIN_CONTAINER_KEY) {
-                    container = static_cast<CoderContainer*>(this);
-                }
                 if (container != NULL) {
                     casted->decode(container);
                 }
