@@ -29,16 +29,17 @@ enum class DecodeContainerType {
 
 class JSONDecodeContainer: public JSONContainer {
 public:
-    vector<JSONDecodeContainer*> children = vector<JSONDecodeContainer*>(0);
+    vector<unsigned long> childrenIndexes;
+    vector<JSONDecodeContainer>* containers;
     string key;
     string content;
     DecodeContainerType parsedType;
     JSONDecodeContainer* nullContainer;
     
     JSONDecodeContainer& getChild(string key) {
-        for (int i = 0; i < children.size(); i++) {
-            if (children[i]->key == key) {
-                return *children[i];
+        for (int i = 0; i < childrenIndexes.size(); i++) {
+            if (containers->data()[childrenIndexes[i]].key == key) {
+                return containers->data()[childrenIndexes[i]];
             }
         }
         return *nullContainer;
@@ -51,10 +52,8 @@ public:
     string decode(string type, CodingKey key) {
         string value = getChild(key).content;
         if(value.length()>1) {
-            if(value[0] == '\"' && value[value.length()-1] == '\"') {
-                value.erase(value.begin());
-                value.erase(value.begin()+value.length()-1);
-            }
+            value.erase(value.begin());
+            value.erase(value.begin()+value.length()-1);
         }
         return value;
     }
@@ -68,8 +67,8 @@ public:
         return type;
     }
 
-    JSONDecodeContainer(string content);
-    JSONDecodeContainer(string key, string content);
+    JSONDecodeContainer(string content, vector<JSONDecodeContainer>* containers);
+    JSONDecodeContainer(string key, string content, vector<JSONDecodeContainer>* containers);
 };
 
 class JSONEncoder: Encoder {
@@ -78,6 +77,8 @@ public:
 };
 
 class JSONDecoder: Decoder {
+private:
+    vector<JSONDecodeContainer> containers;
 public:
     JSONDecodeContainer container(string content);
 };

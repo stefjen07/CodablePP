@@ -51,14 +51,15 @@ vector<string> split(string content, char splitter, bool onlyGlobal = false, boo
     return result;
 }
 
-JSONDecodeContainer::JSONDecodeContainer(string key, string content) {
+JSONDecodeContainer::JSONDecodeContainer(string key, string content, vector<JSONDecodeContainer>* containers) {
     this->type = CoderType::json;
     this->key = key;
+    this->containers = containers;
     if(content == NULL_CONTAINER_CONTENT) {
         this->content = content;
         return;
     }
-    JSONDecodeContainer nullContainer = JSONDecodeContainer("", NULL_CONTAINER_CONTENT);
+    JSONDecodeContainer nullContainer = JSONDecodeContainer("", NULL_CONTAINER_CONTENT, containers);
     this->nullContainer = &nullContainer;
     jsonDebeautify(content);
     if (content.length() < 2) {
@@ -85,13 +86,15 @@ JSONDecodeContainer::JSONDecodeContainer(string key, string content) {
         auto splitted = split(content, ',', true, true);
         for (int i = 0; i < splitted.size(); i++) {
             auto keyval = split(splitted[i], ':', true, true);
-            JSONDecodeContainer child(keyval[0], keyval[1]);
-            this->children.push_back(&child);
+            keyval[0].erase(keyval[0].begin());
+            keyval[0].erase(keyval[0].end()-1);
+            containers->push_back(JSONDecodeContainer(keyval[0], keyval[1], containers));
+            childrenIndexes.push_back(containers->size()-1);
         }
     }
 }
 
-JSONDecodeContainer::JSONDecodeContainer(string content) : JSONDecodeContainer::JSONDecodeContainer("main", content) {}
+JSONDecodeContainer::JSONDecodeContainer(string content, vector<JSONDecodeContainer>* containers) : JSONDecodeContainer::JSONDecodeContainer("main", content, containers) {}
 
 string JSONContainer::content() {
     return "";
@@ -102,5 +105,5 @@ JSONEncodeContainer JSONEncoder::container(CodingKey keys[], unsigned keysAmount
 }
 
 JSONDecodeContainer JSONDecoder::container(string content) {
-    return JSONDecodeContainer(content);
+    return JSONDecodeContainer(content, &containers);
 }
