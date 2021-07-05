@@ -11,14 +11,14 @@ Before using encoding and decoding methods and Codable class, you must add 2 lib
 If you want make class Codable as you do in Swift, you must choose Codable class as a base class.<br>
 For example, if you have class PhoneBook, then its Codable version will look like this:<br>
 ```c++
-class PhoneBook: Codable {};
+class PhoneBook: public Codable {};
 ```
 Also you must provide class with implementions of 2 virtual methods as you do in Swift:<br>
 ```c++
 void encode(CoderContainer* container) {}
 void decode(CoderContainer* container) {}
 ```
-By default, there is only one Coder type - JSON. But you have to check for type and perform 'dynamic_cast'.
+By default, there is only one Coder type - JSON. But you have to check for type and perform `dynamic_cast`.
 Here is an example for our class PhoneBook:
 ```c++
 void encode(CoderContainer* container) {
