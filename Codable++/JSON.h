@@ -72,10 +72,10 @@ public:
         childrenIndexes.push_back(containers->size()-1);
     }
 
-    void encode(bool value, CodingKey key);
-    void encode(int value, CodingKey key);
-    void encode(float value, CodingKey key);
-    void encode(string value, CodingKey key);
+    void encode(bool value, CodingKey key="");
+    void encode(int value, CodingKey key="");
+    void encode(float value, CodingKey key="");
+    void encode(string value, CodingKey key="");
 
     template <typename T>
     void encode(T value, CodingKey key) {
@@ -99,7 +99,18 @@ public:
             casted->encode(this);
         }
         generateContent();
-        return;
+    }
+
+    template <typename T>
+    void encode(vector<T> value) {
+        encodingType = JSONContainerType::array;
+        for (int i = 0; i < value.size(); i++) {
+            JSONEncodeContainer valueContainer(containers);
+            valueContainer.encode(value[i]);
+            containers->push_back(valueContainer);
+            childrenIndexes.push_back(containers->size() - 1);
+        }
+        generateContent();
     }
 
     JSONEncodeContainer(vector<JSONEncodeContainer>* containers);
@@ -129,25 +140,6 @@ public:
     int decode(int type, CodingKey key);
     float decode(float type, CodingKey key);
     string decode(string type, CodingKey key);
-
-    template <class T>
-    vector<T> decode(vector<T> type, CodingKey key) {
-        vector<T> result;
-        auto array = getChild(key);
-        if (array == NULL) {
-            return result;
-        }
-        for (int i = 0; i < array->childrenIndexes.size(); i++) {
-            T item = T();
-            Codable* casted = dynamic_cast<Codable*>(&item);
-            CoderContainer* container = static_cast<CoderContainer*>(&containers->data()[array->childrenIndexes[i]]);
-            if (container != NULL) {
-                casted->decode(container);
-            }
-            result.push_back(item);
-        }
-        return result;
-    }
     
     template <class T>
     T decode(T type, CodingKey key) {
@@ -165,6 +157,20 @@ public:
             }
         }
         return type;
+    }
+
+    template <class T>
+    vector<T> decode(vector<T> type, CodingKey key) {
+        vector<T> result;
+        auto array = getChild(key);
+        if (array == NULL) {
+            return result;
+        }
+        for (int i = 0; i < array->childrenIndexes.size(); i++) {
+            T item = containers->data()[array->childrenIndexes[i]].decode(T());
+            result.push_back(item);
+        }
+        return result;
     }
     
     template<typename T>
