@@ -40,5 +40,18 @@ void decode(CoderContainer* container) {
     }
 }
 ```
-We must provide decoder with any variable with type we want to decode. In our case it is `vector<Contact>()`.
-The second argument in both encoding and decoding methods is key for field in JSON. It must match with key in client-application in Swift.
+We must provide decoder with any variable with type we want to decode. In our case it is `vector<Contact>()`.<br>
+The second argument in both encoding and decoding methods is key for field in JSON. It must match with key in client-application in Swift.<br><br>
+So, we made our Phonebook class Codable. Now we can encode it using JSONEncoder as easy as in Swift
+```c++
+JSONEncoder encoder;
+auto encodeContainer = encoder.container();
+encodeContainer.encode(book);
+cout << encodeContainer.content << endl;
+```
+and decode it back to Phonebook class
+```c++
+JSONDecoder decoder;
+auto container = decoder.container(encodeContainer.content);
+auto decodeBook = container.decode(PhoneBook());
+```
