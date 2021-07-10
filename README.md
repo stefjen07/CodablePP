@@ -13,10 +13,11 @@ For example, if you have class PhoneBook, then its Codable version will look lik
 ```c++
 class PhoneBook: public Codable {};
 ```
-Also you must provide class with implementations of 2 virtual methods as you do in Swift:<br>
+Also you must provide class with implementations of 2 virtual methods as you do in Swift and 1 initializer without arguments:<br>
 ```c++
 void encode(CoderContainer* container) {}
 void decode(CoderContainer* container) {}
+PhoneBook() {}
 ```
 By default, there is only one Coder type - JSON. But you have to check for type and perform `dynamic_cast`.
 Here is an example for our class PhoneBook:
