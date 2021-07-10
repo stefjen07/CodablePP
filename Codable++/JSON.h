@@ -121,7 +121,6 @@ class JSONDecodeContainer: public JSONContainer {
 public:
     vector<JSONDecodeContainer>* containers;
     JSONContainerType parsedType;
-    JSONDecodeContainer* nullContainer;
     
     JSONDecodeContainer* getChild(string key) {
         for (int i = 0; i < childrenIndexes.size(); i++) {
@@ -129,7 +128,7 @@ public:
                 return &containers->data()[childrenIndexes[i]];
             }
         }
-        return nullContainer;
+        return NULL;
     }
     
     JSONDecodeContainer* operator [](string key) {

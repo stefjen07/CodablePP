@@ -13,7 +13,7 @@ For example, if you have class PhoneBook, then its Codable version will look lik
 ```c++
 class PhoneBook: public Codable {};
 ```
-Also you must provide class with implementions of 2 virtual methods as you do in Swift:<br>
+Also you must provide class with implementations of 2 virtual methods as you do in Swift:<br>
 ```c++
 void encode(CoderContainer* container) {}
 void decode(CoderContainer* container) {}
