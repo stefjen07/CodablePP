@@ -75,6 +75,7 @@ public:
     void encode(bool value, CodingKey key="");
     void encode(int value, CodingKey key="");
     void encode(float value, CodingKey key="");
+    void encode(double value, CodingKey key = "");
     void encode(string value, CodingKey key="");
 
     template <typename T>
@@ -138,6 +139,7 @@ public:
     bool decode(bool type, CodingKey key);
     int decode(int type, CodingKey key);
     float decode(float type, CodingKey key);
+    double decode(double type, CodingKey key);
     string decode(string type, CodingKey key);
     
     template <class T>

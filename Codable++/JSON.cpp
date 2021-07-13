@@ -45,6 +45,17 @@ void JSONEncodeContainer::encode(float value, CodingKey key) {
     childrenIndexes.push_back(containers->size() - 1);
 }
 
+void JSONEncodeContainer::encode(double value, CodingKey key) {
+    JSONEncodeContainer result(key, "", containers);
+    stringstream ss;
+    ss << value;
+    ss >> result.value;
+    result.encodingType = JSONContainerType::variable;
+    result.generateContent();
+    containers->push_back(result);
+    childrenIndexes.push_back(containers->size() - 1);
+}
+
 void JSONEncodeContainer::encode(string value, CodingKey key) {
     JSONEncodeContainer result(key, "", containers);
     result.value = "\"" + value + "\"";
@@ -174,7 +185,20 @@ float JSONDecodeContainer::decode(float type, CodingKey key) {
     string value = child->content;
     stringstream ss;
     ss << value;
-    int result;
+    float result;
+    ss >> result;
+    return result;
+}
+
+double JSONDecodeContainer::decode(double type, CodingKey key) {
+    JSONDecodeContainer* child = getChild(key);
+    if (child == NULL) {
+        return type;
+    }
+    string value = child->content;
+    stringstream ss;
+    ss << value;
+    double result;
     ss >> result;
     return result;
 }
