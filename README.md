@@ -1,5 +1,5 @@
 # CodablePP
-This C++ library provides with Codable protocol from Swift.<br>
+This C++ library provides Codable protocol from Swift.<br>
 It may be useful if you have C++ server for iOS or macOS application.<br>
 Library methods have very similar syntax to Swift's version.
 ## Documentation
