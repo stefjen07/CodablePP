@@ -34,6 +34,17 @@ void JSONEncodeContainer::encode(int value, CodingKey key) {
     childrenIndexes.push_back(containers->size() - 1);
 }
 
+void JSONEncodeContainer::encode(long long value, CodingKey key) {
+    JSONEncodeContainer result(key, "", containers);
+    stringstream ss;
+    ss << value;
+    ss >> result.value;
+    result.encodingType = JSONContainerType::variable;
+    result.generateContent();
+    containers->push_back(result);
+    childrenIndexes.push_back(containers->size() - 1);
+}
+
 void JSONEncodeContainer::encode(float value, CodingKey key) {
     JSONEncodeContainer result(key, "", containers);
     stringstream ss;
@@ -56,9 +67,9 @@ void JSONEncodeContainer::encode(double value, CodingKey key) {
     childrenIndexes.push_back(containers->size() - 1);
 }
 
-void JSONEncodeContainer::encode(string value, CodingKey key) {
+void JSONEncodeContainer::encode(string value, CodingKey key, bool withQuotes) {
     JSONEncodeContainer result(key, "", containers);
-    result.value = "\"" + value + "\"";
+    result.value = withQuotes ? ("\"" + value + "\"") : value;
     result.encodingType = JSONContainerType::variable;
     result.generateContent();
     containers->push_back(result);
@@ -177,6 +188,19 @@ int JSONDecodeContainer::decode(int type, CodingKey key) {
     return result;
 }
 
+long long JSONDecodeContainer::decode(long long type, CodingKey key) {
+    JSONDecodeContainer* child = getChild(key);
+    if (child == NULL) {
+        return type;
+    }
+    string value = child->content;
+    stringstream ss;
+    ss << value;
+    long long result;
+    ss >> result;
+    return result;
+}
+
 float JSONDecodeContainer::decode(float type, CodingKey key) {
     JSONDecodeContainer* child = getChild(key);
     if(child == NULL) {
@@ -203,13 +227,13 @@ double JSONDecodeContainer::decode(double type, CodingKey key) {
     return result;
 }
 
-string JSONDecodeContainer::decode(string type, CodingKey key) {
+string JSONDecodeContainer::decode(string type, CodingKey key, bool withQuotes) {
     JSONDecodeContainer* child = getChild(key);
     if(child == NULL) {
         return type;
     }
     string value = child->content;
-    if (value.length() > 1) {
+    if (value.length() > 1 && withQuotes) {
         value.erase(value.begin());
         value.erase(value.begin() + value.length() - 1);
     }

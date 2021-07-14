@@ -15,21 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="JSON.cpp">
+    <ClCompile Include="src\Codable.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\JSON.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Codable.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="JSON.h">
+    <ClInclude Include="src\Codable.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Codable.h">
+    <ClInclude Include="src\JSON.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>

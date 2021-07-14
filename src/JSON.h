@@ -74,9 +74,10 @@ public:
 
     void encode(bool value, CodingKey key="");
     void encode(int value, CodingKey key="");
+    void encode(long long value, CodingKey key = "");
     void encode(float value, CodingKey key="");
     void encode(double value, CodingKey key = "");
-    void encode(string value, CodingKey key="");
+    void encode(string value, CodingKey key="", bool withQuotes = true);
 
     template <typename T>
     void encode(T value, CodingKey key) {
@@ -138,9 +139,10 @@ public:
     
     bool decode(bool type, CodingKey key);
     int decode(int type, CodingKey key);
+    long long decode(long long type, CodingKey key);
     float decode(float type, CodingKey key);
     double decode(double type, CodingKey key);
-    string decode(string type, CodingKey key);
+    string decode(string type, CodingKey key, bool withQuotes = true);
     
     template <class T>
     T decode(T type, CodingKey key) {
