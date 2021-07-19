@@ -124,6 +124,8 @@ JSONDecodeContainer::JSONDecodeContainer(string key, string content, vector<JSON
     this->containers = containers;
     jsonDebeautify(content);
     if (content.length() < 2) {
+        this->parsedType = JSONContainerType::variable;
+        this->content = content;
         return;
     }
     else {
