@@ -175,6 +175,16 @@ public:
         }
         return result;
     }
+
+    template <class T>
+    vector<T> decode(vector<T> type) {
+        vector<T> result;
+        for (int i = 0; i < childrenIndexes.size(); i++) {
+            T item = containers->data()[childrenIndexes[i]].decode(T());
+            result.push_back(item);
+        }
+        return result;
+    }
     
     template<typename T>
     T decode(T type) {
