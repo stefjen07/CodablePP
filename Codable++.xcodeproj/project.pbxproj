@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3ECA8D542691D20B00717D6A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3ECA8D4F2691D20B00717D6A /* main.cpp */; };
-		3ECA8D552691D20B00717D6A /* JSON.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3ECA8D502691D20B00717D6A /* JSON.cpp */; };
-		3ECA8D562691D20B00717D6A /* Codable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3ECA8D512691D20B00717D6A /* Codable.cpp */; };
+		3EA0C89826A75A160094D944 /* JSON.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3EA0C89426A75A160094D944 /* JSON.cpp */; };
+		3EA0C89926A75A160094D944 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3EA0C89626A75A160094D944 /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,12 +24,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3EA0C89426A75A160094D944 /* JSON.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSON.cpp; sourceTree = SOURCE_ROOT; };
+		3EA0C89526A75A160094D944 /* Codable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Codable.h; sourceTree = SOURCE_ROOT; };
+		3EA0C89626A75A160094D944 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = SOURCE_ROOT; };
+		3EA0C89726A75A160094D944 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = SOURCE_ROOT; };
 		3ECA8D452691D1C800717D6A /* Codable++ */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Codable++"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3ECA8D4F2691D20B00717D6A /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		3ECA8D502691D20B00717D6A /* JSON.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSON.cpp; sourceTree = "<group>"; };
-		3ECA8D512691D20B00717D6A /* Codable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Codable.cpp; sourceTree = "<group>"; };
-		3ECA8D522691D20B00717D6A /* Codable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Codable.h; sourceTree = "<group>"; };
-		3ECA8D532691D20B00717D6A /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,10 +42,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3EA0C89326A759FA0094D944 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				3EA0C89526A75A160094D944 /* Codable.h */,
+				3EA0C89426A75A160094D944 /* JSON.cpp */,
+				3EA0C89726A75A160094D944 /* JSON.h */,
+				3EA0C89626A75A160094D944 /* main.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		3ECA8D3C2691D1C700717D6A = {
 			isa = PBXGroup;
 			children = (
-				3ECA8D472691D1C800717D6A /* Codable++ */,
+				3EA0C89326A759FA0094D944 /* src */,
 				3ECA8D462691D1C800717D6A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,18 +67,6 @@
 				3ECA8D452691D1C800717D6A /* Codable++ */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		3ECA8D472691D1C800717D6A /* Codable++ */ = {
-			isa = PBXGroup;
-			children = (
-				3ECA8D512691D20B00717D6A /* Codable.cpp */,
-				3ECA8D522691D20B00717D6A /* Codable.h */,
-				3ECA8D502691D20B00717D6A /* JSON.cpp */,
-				3ECA8D532691D20B00717D6A /* JSON.h */,
-				3ECA8D4F2691D20B00717D6A /* main.cpp */,
-			);
-			path = "Codable++";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,9 +126,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3ECA8D542691D20B00717D6A /* main.cpp in Sources */,
-				3ECA8D552691D20B00717D6A /* JSON.cpp in Sources */,
-				3ECA8D562691D20B00717D6A /* Codable.cpp in Sources */,
+				3EA0C89926A75A160094D944 /* main.cpp in Sources */,
+				3EA0C89826A75A160094D944 /* JSON.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
