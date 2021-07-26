@@ -1,6 +1,6 @@
 {
   "name": "codable-pp",
-  "version-string": "1.0.0",
-  "description": "C++ library provides Codable protocol from Swift. It may be useful if you have C++ server for iOS or macOS application.",
-  "dependencies": []
+  "version": "1.0.0",
+  "description": "C++ library that provides Codable protocol from Swift. It may be useful if you have C++ server for iOS or macOS application.",
+  "homepage": "https://github.com/stefjen07/CodablePP"
 }
