@@ -23,6 +23,7 @@
     <ClInclude Include="JSON.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Codable.cpp" />
     <ClCompile Include="JSON.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
