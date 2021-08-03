@@ -1,7 +1,7 @@
 #ifndef JSON_H
 #define JSON_H
 
-#include "Codable.h"
+#include "Codable.hpp"
 #include <string>
 #include <vector>
 

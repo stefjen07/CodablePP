@@ -1,5 +1,5 @@
-#include "Codable.h"
-#include "JSON.h"
+#include "Codable.hpp"
+#include "JSON.hpp"
 #include <vector>
 #include <sstream>
 #include <string>
