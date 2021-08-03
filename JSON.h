@@ -8,8 +8,6 @@
 //Empty key for arrays and the highest closures
 #define MAIN_CONTAINER_KEY ""
 
-using namespace std;
-
 //Container for encoding to/decoding from JSON format
 //Consists of:
 // childrenIndexes - array of children's indexes in containers array (applicable only for arrays and closures)
@@ -17,9 +15,9 @@ using namespace std;
 // content - text representation of children (for arrays and closures) or value (for variables)
 class JSONContainer: public CoderContainer {
 public:
-    vector<unsigned long> childrenIndexes;
-    string key;
-    string content;
+    std::vector<unsigned long> childrenIndexes;
+    std::string key;
+    std::string content;
 };
 
 //Types of JSON containers:
@@ -39,16 +37,16 @@ enum class JSONContainerType {
 // value - data value (for variables only)
 class JSONEncodeContainer: public JSONContainer {
 public:
-    vector<JSONEncodeContainer>* containers;
+    std::vector<JSONEncodeContainer>* containers;
     JSONContainerType encodingType;
-    string value;
+    std::string value;
 
     //method for converting container to JSON format
     void generateContent();
 
-    //Encoding vector as array
+    //Encoding std::vector as array
     template <typename T>
-    void encode(vector<T> value, CodingKey key) {
+    void encode(std::vector<T> value, CodingKey key) {
         //Creating container for array
         JSONEncodeContainer array(this->containers);
         //Setting container's key to the value of a given key
@@ -81,7 +79,7 @@ public:
     void encode(long long value, CodingKey key = "");
     void encode(float value, CodingKey key="");
     void encode(double value, CodingKey key = "");
-    void encode(string value, CodingKey key="", bool withQuotes = true);
+    void encode(std::string value, CodingKey key="", bool withQuotes = true);
 
     //Encoding method for classes with Codable protocol 
     template <class T>
@@ -93,7 +91,7 @@ public:
         //Setting encoding type to closure
         result.encodingType = JSONContainerType::closure;
         //Checking if provided type is polymorphic
-        if (is_polymorphic<T>::value) {
+        if (std::is_polymorphic<T>::value) {
             //Converting provided value to Codable
             Codable* casted = dynamic_cast<Codable*>(&value);
             //Encoding provided value to result container
@@ -113,7 +111,7 @@ public:
         //Setting encoding type to closure
         encodingType = JSONContainerType::closure;
         //Checking if provided type is polymorphic
-        if (is_polymorphic<T>::value) {
+        if (std::is_polymorphic<T>::value) {
             //Converting provided value to Codable
             Codable* casted = dynamic_cast<Codable*>(&value);
             //Encoding provided value to result container
@@ -123,9 +121,9 @@ public:
         generateContent();
     }
 
-    //Encoding vector as array without key
+    //Encoding std::vector as array without key
     template <typename T>
-    void encode(vector<T> value) {
+    void encode(std::vector<T> value) {
         //Setting encoding type to array
         encodingType = JSONContainerType::array;
         //Encoding every element of array
@@ -134,17 +132,17 @@ public:
             JSONEncodeContainer valueContainer(containers);
             //Encoding element to container
             valueContainer.encode(value[i]);
-            //Adding element to containers vector
+            //Adding element to containers std::vector
             containers->push_back(valueContainer);
-            //Adding element to children vector of array container
+            //Adding element to children std::vector of array container
             childrenIndexes.push_back(containers->size() - 1);
         }
         //Generating JSON representation of container content
         generateContent();
     }
 
-    JSONEncodeContainer(vector<JSONEncodeContainer>* containers);
-    JSONEncodeContainer(string key, string content, vector<JSONEncodeContainer>* containers);
+    JSONEncodeContainer(std::vector<JSONEncodeContainer>* containers);
+    JSONEncodeContainer(std::string key, std::string content, std::vector<JSONEncodeContainer>* containers);
 };
 
 //Container for decoding from JSON format
@@ -153,11 +151,11 @@ public:
 // parsedType - container type (closure, array or variable)
 class JSONDecodeContainer: public JSONContainer {
 public:
-    vector<JSONDecodeContainer>* containers;
+    std::vector<JSONDecodeContainer>* containers;
     JSONContainerType parsedType;
     
     //Getting container with specific key from children containers
-    JSONDecodeContainer* operator [](string key);
+    JSONDecodeContainer* operator [](std::string key);
     
     //Decoding methods for standard data types 
 
@@ -166,13 +164,13 @@ public:
     long long decode(long long type, CodingKey key);
     float decode(float type, CodingKey key);
     double decode(double type, CodingKey key);
-    string decode(string type, CodingKey key, bool withQuotes = true);
+    std::string decode(std::string type, CodingKey key, bool withQuotes = true);
     
     //Decoding method for classes with Codable protocol
     template <class T>
     T decode(T type, CodingKey key) {
         //Checking if provided type is polymorphic
-        if (is_polymorphic<T>::value) {
+        if (std::is_polymorphic<T>::value) {
             //Converting type sample to Codable
             Codable* casted = dynamic_cast<Codable*>(&type);
             //Getting container for decoding
@@ -196,9 +194,9 @@ public:
 
     //Decoding method for array
     template <typename T>
-    vector<T> decode(vector<T> type, CodingKey key) {
-        //Creating vector for result
-        vector<T> result;
+    std::vector<T> decode(std::vector<T> type, CodingKey key) {
+        //Creating std::vector for result
+        std::vector<T> result;
         //Getting container for decoding
         auto array = operator[](key);
         if (array != NULL) {
@@ -213,9 +211,9 @@ public:
 
     //Decoding method for array without key (array in this container)
     template <typename T>
-    vector<T> decode(vector<T> type) {
-        //Creating vector for result
-        vector<T> result;
+    std::vector<T> decode(std::vector<T> type) {
+        //Creating std::vector for result
+        std::vector<T> result;
         //Decoding every element of array
         for (int i = 0; i < childrenIndexes.size(); i++) {
             T item = containers->data()[childrenIndexes[i]].decode(T());
@@ -230,8 +228,8 @@ public:
         return decode(type, MAIN_CONTAINER_KEY);
     }
 
-    JSONDecodeContainer(string content, vector<JSONDecodeContainer>* containers);
-    JSONDecodeContainer(string key, string content, vector<JSONDecodeContainer>* containers);
+    JSONDecodeContainer(std::string content, std::vector<JSONDecodeContainer>* containers);
+    JSONDecodeContainer(std::string key, std::string content, std::vector<JSONDecodeContainer>* containers);
 };
 
 //JSON encoder class
@@ -239,7 +237,7 @@ public:
 // containers - array of all containers created with use of this encoder
 class JSONEncoder: Encoder {
 private:
-    vector<JSONEncodeContainer> containers;
+    std::vector<JSONEncodeContainer> containers;
 public:
     JSONEncodeContainer container();
 };
@@ -249,9 +247,9 @@ public:
 // containers - array of all containers created with use of this decoder
 class JSONDecoder: Decoder {
 private:
-    vector<JSONDecodeContainer> containers;
+    std::vector<JSONDecodeContainer> containers;
 public:
-    JSONDecodeContainer container(string content);
+    JSONDecodeContainer container(std::string content);
 };
 
 #endif

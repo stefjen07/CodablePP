@@ -6,6 +6,6 @@ if(NOT TARGET Codable)
 
     add_library(Codable Codable.cpp Codable.h JSON.cpp JSON.h)
 
-    add_executable(test_codable main.cpp)
-    target_link_libraries(test_codable Codable)
+    #add_executable(test_codable main.cpp)
+    #target_link_libraries(test_codable Codable)
 endif()

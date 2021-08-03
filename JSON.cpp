@@ -4,6 +4,8 @@
 #include <sstream>
 #include <string>
 
+using namespace std;
+
 JSONEncodeContainer::JSONEncodeContainer(vector<JSONEncodeContainer>* containers) {
     this->type = CoderType::json;
     this->containers = containers;
