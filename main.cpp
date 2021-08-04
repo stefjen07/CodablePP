@@ -1,8 +1,8 @@
 //Example of using Codable protocol and JSON encoder/decoder
 //Description: Encoding phone book class to JSON string, then decoding and printing all the contacts in the book. 
 
-#include "Codable.h"
-#include "JSON.h"
+#include "Codable.hpp"
+#include "JSON.hpp"
 #include <iostream>
 using namespace std;
 
