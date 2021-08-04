@@ -4,6 +4,8 @@ if(NOT TARGET Codable)
 
     set(CMAKE_CXX_STANDARD 14)
 
-    add_executable(test_codable main.cpp)
-    target_link_libraries(test_codable Codable)
+    add_library(Codable Codable.hpp JSON.cpp JSON.hpp)
+
+    #add_executable(test_codable main.cpp)
+    #target_link_libraries(test_codable Codable)
 endif()
