@@ -1,4 +1,6 @@
 # CodablePP
+[![Build Status](https://travis-ci.com/stefjen07/CodablePP.svg?branch=main)](https://travis-ci.com/stefjen07/CodablePP)
+<br>
 This C++ library provides Codable protocol from Swift.<br>
 It may be useful if you have C++ server for iOS or macOS application.<br>
 Library methods have very similar syntax to Swift's version.
