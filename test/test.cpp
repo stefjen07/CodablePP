@@ -4,7 +4,20 @@
 #include "Codable.hpp"
 #include "JSON.hpp"
 #include <iostream>
+#include <math.h>
 using namespace std;
+
+const long long floating_check_size = pow(10, 4);
+
+bool round_equal(double val, double ref) {
+    val *= floating_check_size;
+    val = floor(val) / floating_check_size;
+
+    ref *= floating_check_size;
+    ref = floor(ref) / floating_check_size;
+
+    return val == ref;
+}
 
 //Phone number class
 //Consists of:
@@ -13,8 +26,9 @@ using namespace std;
 // encode/decode methods for Codable protocol
 class PhoneNumber: public Codable {
 public:
-    int countryCode;
-    int number;
+    int country_code;
+    long long number;
+    float last_signal_level;
     
     //Encode method for Codable protocol
     void encode(CoderContainer* container) {
@@ -22,10 +36,10 @@ public:
         if(container->type == CoderType::json) {
             //Converting CoderContainer to JSONEncodeContainer, because we need to use JSON only methods for encoding.
             JSONEncodeContainer* jsonContainer = dynamic_cast<JSONEncodeContainer*>(container);
-            //Encoding country code to container using key "country"
-            jsonContainer->encode(countryCode, "country");
-            //Encoding phone number to container using key "number"
+            //Encoding phone number's info to container
+            jsonContainer->encode(country_code, "country");
             jsonContainer->encode(number, "number");
+            jsonContainer->encode(last_signal_level, "signal");
         }
     }
     
@@ -35,21 +49,38 @@ public:
         if(container->type == CoderType::json) {
             //Converting CoderContainer to JSONDecodeContainer, because we need to use JSON only methods for decoding.
             JSONDecodeContainer* jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
-            //Decoding country code from container using key "country"
-            this->countryCode = jsonContainer->decode(int(), "country");
-            //Decoding phone number from container using key "number"
-            this->number = jsonContainer->decode(int(), "number");
+            //Decoding phone number's info from container
+            this->country_code = jsonContainer->decode(int(), "country");
+            this->number = jsonContainer->decode(0LL, "number");
+            this->last_signal_level = jsonContainer->decode(float(), "signal");
         }
     }
     
     //This constructor will be used for providing decoder with data type.
     PhoneNumber() {}
     
-    PhoneNumber(int countryCode, int number) {
-        this->countryCode = countryCode;
+    PhoneNumber(int country_code, long long number, float last_signal_level) {
+        this->country_code = country_code;
         this->number = number;
+        this->last_signal_level = last_signal_level;
     }
 };
+
+bool check_number(PhoneNumber number, PhoneNumber ref) {
+    if(number.number != ref.number) {
+        cerr << "[Phone number check]: numbers' values are different\n";
+        return false;
+    }
+    if(number.country_code != ref.country_code) {
+        cerr << "[Phone number check]: numbers' country codes are different\n";
+        return false;
+    }
+    if(!round_equal(number.last_signal_level, ref.last_signal_level)) {
+        cerr << "[Phone number check]: numbers' last signals are different: " << number.last_signal_level << ' ' << ref.last_signal_level << '\n';
+        return false;
+    }
+    return true;
+}
 
 //Phone number class
 //Consists of:
@@ -59,7 +90,8 @@ public:
 class Contact: public Codable {
 public:
     string name;
-    PhoneNumber phoneNumber;
+    PhoneNumber phone_number;
+    bool is_valid;
     
     //Encode method for Codable protocol
     void encode(CoderContainer* container) {
@@ -67,10 +99,10 @@ public:
         if(container->type == CoderType::json) {
             //Converting CoderContainer to JSONEncodeContainer, because we need to use JSON only methods for encoding.
             JSONEncodeContainer* jsonContainer = dynamic_cast<JSONEncodeContainer*>(container);
-            //Encoding contact's name to container using key "name"
+            //Encoding contact's info to container
             jsonContainer->encode(name, "name");
-            //Encoding phone number to container using key "phoneNumber"
-            jsonContainer->encode(phoneNumber, "phoneNumber");
+            jsonContainer->encode(phone_number, "phone_number");
+            jsonContainer->encode(is_valid, "is_valid");
         }
     }
     
@@ -80,21 +112,38 @@ public:
         if(container->type == CoderType::json) {
             //Converting CoderContainer to JSONDecodeContainer, because we need to use JSON only methods for decoding.
             JSONDecodeContainer *jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
-            //Decoding contact's name from container using key "name"
+            //Decoding contact's info from container
             name = jsonContainer->decode(string(), "name");
-            //Decoding phone number from container using key "phoneNumber"
-            phoneNumber = jsonContainer->decode(PhoneNumber(), "phoneNumber");
+            phone_number = jsonContainer->decode(PhoneNumber(), "phone_number");
+            is_valid = jsonContainer->decode(bool(), "is_valid");
         }
     }
 
     //This constructor will be used for providing decoder with data type.
     Contact() {}
 
-    Contact(string name, PhoneNumber phoneNumber) {
+    Contact(string name, PhoneNumber phone_number, bool is_valid) {
         this->name = name;
-        this->phoneNumber = phoneNumber;
+        this->phone_number = phone_number;
+        this->is_valid = is_valid;
     }
 };
+
+bool check_contact(Contact contact, Contact ref) {
+    if(contact.name != ref.name) {
+        cerr << "[Contact check]: contacts' names are different\n";
+        return false;
+    }
+    if(contact.is_valid != ref.is_valid) {
+        cerr << "[Contact check]: contacts' validation statuses are different\n";
+        return false;
+    }
+    if(!check_number(contact.phone_number, ref.phone_number)) {
+        cerr << "[Contact check]: contacts' phone numbers are different\n";
+        return false;
+    }
+    return true;
+}
 
 //Phone book class
 //Consists of:
@@ -103,6 +152,7 @@ public:
 class PhoneBook: public Codable {
 public:
     vector<Contact> contacts;
+    double time_spent;
 
     //Encode method for Codable protocol
     void encode(CoderContainer* container) {
@@ -110,8 +160,9 @@ public:
         if (container->type == CoderType::json) {
             //Converting CoderContainer to JSONEncodeContainer, because we need to use JSON only methods for encoding.
             JSONEncodeContainer* jsonContainer = dynamic_cast<JSONEncodeContainer*>(container);
-            //Encoding contacts array to container using key "contacts"
+            //Encoding phone book's info to container
             jsonContainer->encode(contacts, "contacts");
+            jsonContainer->encode(time_spent, "time_spent");
         }
     }
 
@@ -121,26 +172,46 @@ public:
         if (container->type == CoderType::json) {
             //Converting CoderContainer to JSONDecodeContainer, because we need to use JSON only methods for decoding.
             JSONDecodeContainer* jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
-            //Decoding contacts array from container using key "contacts"
+            //Decoding phone book's info from container
             contacts = jsonContainer->decode(vector<Contact>(), "contacts");
+            time_spent = jsonContainer->decode(double(), "time_spent");
         }
     }
 
     //This constructor will be used for providing decoder with data type.
     PhoneBook() {}
 
-    PhoneBook(vector<Contact> contacts) {
+    PhoneBook(vector<Contact> contacts, double time_spent) {
         this->contacts = contacts;
+        this->time_spent = time_spent;
     }
 };
 
+bool check_book(PhoneBook book, PhoneBook ref) {
+    if(book.contacts.size() != ref.contacts.size()) {
+        cerr << "[Phonebook check]: Contacts arrays' sizes are different\n";
+        return false;
+    }
+    if(!round_equal(book.time_spent, ref.time_spent)) {
+        cerr << "[Phonebook check]: Time spent values are different: " << book.time_spent << " " << ref.time_spent << '\n';
+        return false;
+    }
+    for(int i=0;i<book.contacts.size();i++) {
+        if(!check_contact(book.contacts[i], ref.contacts[i])) {
+            cerr << "[Phonebook check]: Contacts with index " << i << " are different" << '\n';
+            return false;
+        }
+    }
+    return true;
+}
+
 int main() {
     //Creating contact with name Eugene and phone number 123456789
-    Contact eugene = Contact("Eugene", PhoneNumber(123, 456789));
+    Contact eugene = Contact("Eugene", PhoneNumber(123, 456789, M_SQRT2), true);
     //Creating contacts array with contact Eugene
     vector<Contact> contacts = { eugene };
     //Creating phone book from contacts array
-    PhoneBook book(contacts);
+    PhoneBook book(contacts, M_PI);
     //Initializing JSON encoder
 	JSONEncoder encoder;
     //Getting container for encoding
@@ -154,13 +225,21 @@ int main() {
     //Getting container for decoding of encoded content
 	auto container = decoder.container(encodeContainer.content);
     //Decoding encoded content to variable
-    auto decodeBook = container.decode(PhoneBook());
+    auto decode_book = container.decode(PhoneBook());
+    //Checking decoded book
+    if (!check_book(decode_book, book)) {
+        return 1;
+    }
     //Printing all contacts' info
-    for (int i = 0; i < decodeBook.contacts.size(); i++) {
-        Contact contact = decodeBook.contacts[i];
-        cout << contact.name << " " << contact.phoneNumber.countryCode << " " << contact.phoneNumber.number << endl;
-        if(contact.name != book.contacts[i].name)
-            return 1;
+    for (int i = 0; i < decode_book.contacts.size(); i++) {
+        Contact contact = decode_book.contacts[i];
+        if(i == 0) {
+            if(contact.phone_number.country_code != 123) {
+                cerr << "Country code was modified during encoding/decoding";
+                return 1;
+            }
+        }
+        cout << contact.name << " " << contact.phone_number.country_code << " " << contact.phone_number.number << endl;
     }
 	return 0;
 }

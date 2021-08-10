@@ -42,26 +42,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dfecdcb-6c59-465c-a313-ff2759c805a7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.sln" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.vcxproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.vcxproj.filters" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.vcxproj.user" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.xcodeproj/project.pbxproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.xcodeproj/project.xcworkspace/contents.xcworkspacedata" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.xcodeproj/project.xcworkspace/xcuserdata/evgenij.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.xcodeproj/xcuserdata/evgenij.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable++.xcodeproj/xcuserdata/evgenij.xcuserdatad/xcschemes/xcschememanagement.plist" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codable.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CodablePPLibrary.sln" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CodablePPLibrary.vcxproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CodablePPLibrary.vcxproj.filters" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CodablePPLibrary.vcxproj.user" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSON.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSON.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/test.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +53,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug-Coverage" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -315,11 +297,14 @@
       <option name="presentableId" value="Default" />
       <updated>1628631851125</updated>
       <workItem from="1628631875465" duration="232000" />
-      <workItem from="1628633842124" duration="1314000" />
+      <workItem from="1628633842124" duration="4765000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="../../../../Documents/GitHub/CodablePP/cmake-build-debug-coverage" NAME="test_codable Coverage Results" MODIFIED="1628638617888" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
