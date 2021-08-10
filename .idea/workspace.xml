@@ -42,7 +42,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dfecdcb-6c59-465c-a313-ff2759c805a7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/test.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -297,7 +296,7 @@
       <option name="presentableId" value="Default" />
       <updated>1628631851125</updated>
       <workItem from="1628631875465" duration="232000" />
-      <workItem from="1628633842124" duration="4765000" />
+      <workItem from="1628633842124" duration="4989000" />
     </task>
     <servers />
   </component>
@@ -305,6 +304,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="../../../../Documents/GitHub/CodablePP/cmake-build-debug-coverage" NAME="test_codable Coverage Results" MODIFIED="1628638617888" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="../../../../Documents/GitHub/CodablePP/cmake-build-debug-coverage" NAME="test_codable Coverage Results" MODIFIED="1628638642314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
