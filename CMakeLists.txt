@@ -9,10 +9,9 @@ if(NOT TARGET Codable)
 
     add_library(Codable include/Codable.hpp src/JSON.cpp include/JSON.hpp)
 
-    #add_executable(test_codable test/test.cpp)
-    #target_link_libraries(test_codable Codable)
-
     if(BUILD_TESTING)
+        add_executable(test_codable test/test.cpp)
+        target_link_libraries(test_codable Codable)
         add_test(Codable test_codable)
     endif()
 
