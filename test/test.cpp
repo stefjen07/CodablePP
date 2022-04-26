@@ -34,11 +34,9 @@ public:
     
     //Encode method for Codable protocol
     void encode(CoderContainer* container) {
-        //Checking for container type (there is only JSON type by default)
         if(container->type == CoderType::json) {
-            //Converting CoderContainer to JSONEncodeContainer, because we need to use JSON only methods for encoding.
             JSONEncodeContainer* jsonContainer = dynamic_cast<JSONEncodeContainer*>(container);
-            //Encoding phone number's info to container
+
             jsonContainer->encode(country_code, "country");
             jsonContainer->encode(number, "number");
             jsonContainer->encode(last_signal_level, "signal");
@@ -47,11 +45,9 @@ public:
     
     //Decode method for Codable protocol
     void decode(CoderContainer* container) {
-        //Checking for container type (there is only JSON type by default)
         if(container->type == CoderType::json) {
-            //Converting CoderContainer to JSONDecodeContainer, because we need to use JSON only methods for decoding.
             JSONDecodeContainer* jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
-            //Decoding phone number's info from container
+
             this->country_code = jsonContainer->decode(int(), "country");
             this->number = jsonContainer->decode(0LL, "number");
             this->last_signal_level = jsonContainer->decode(float(), "signal");
@@ -97,11 +93,9 @@ public:
     
     //Encode method for Codable protocol
     void encode(CoderContainer* container) {
-        //Checking for container type (there is only JSON type by default)
         if(container->type == CoderType::json) {
-            //Converting CoderContainer to JSONEncodeContainer, because we need to use JSON only methods for encoding.
             JSONEncodeContainer* jsonContainer = dynamic_cast<JSONEncodeContainer*>(container);
-            //Encoding contact's info to container
+
             jsonContainer->encode(name, "name");
             jsonContainer->encode(phone_number, "phone_number");
             jsonContainer->encode(is_valid, "is_valid");
@@ -110,11 +104,9 @@ public:
     
     //Decode method for Codable protocol
     void decode(CoderContainer* container) {
-        //Checking for container type (there is only JSON type by default)
         if(container->type == CoderType::json) {
-            //Converting CoderContainer to JSONDecodeContainer, because we need to use JSON only methods for decoding.
             JSONDecodeContainer *jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
-            //Decoding contact's info from container
+
             name = jsonContainer->decode(string(), "name");
             phone_number = jsonContainer->decode(PhoneNumber(), "phone_number");
             is_valid = jsonContainer->decode(bool(), "is_valid");
@@ -158,11 +150,9 @@ public:
 
     //Encode method for Codable protocol
     void encode(CoderContainer* container) {
-        //Checking for container type (there is only JSON type by default)
         if (container->type == CoderType::json) {
-            //Converting CoderContainer to JSONEncodeContainer, because we need to use JSON only methods for encoding.
             JSONEncodeContainer* jsonContainer = dynamic_cast<JSONEncodeContainer*>(container);
-            //Encoding phone book's info to container
+
             jsonContainer->encode(contacts, "contacts");
             jsonContainer->encode(time_spent, "time_spent");
         }
@@ -170,11 +160,9 @@ public:
 
     //Decode method for Codable protocol
     void decode(CoderContainer* container) {
-        //Checking for container type (there is only JSON type by default)
         if (container->type == CoderType::json) {
-            //Converting CoderContainer to JSONDecodeContainer, because we need to use JSON only methods for decoding.
             JSONDecodeContainer* jsonContainer = dynamic_cast<JSONDecodeContainer*>(container);
-            //Decoding phone book's info from container
+
             contacts = jsonContainer->decode(vector<Contact>(), "contacts");
             time_spent = jsonContainer->decode(double(), "time_spent");
         }
@@ -208,31 +196,26 @@ bool check_book(PhoneBook book, PhoneBook ref) {
 }
 
 int main() {
-    //Creating contact with name Eugene and phone number 123456789
+    //Phone book creation
     Contact eugene = Contact("Eugene", PhoneNumber(123, 456789, M_SQRT2), true);
-    //Creating contacts array with contact Eugene
     vector<Contact> contacts = { eugene };
-    //Creating phone book from contacts array
     PhoneBook book(contacts, M_PI);
-    //Initializing JSON encoder
+
+    //Encoding
 	JSONEncoder encoder;
-    //Getting container for encoding
     auto encodeContainer = encoder.container();
-    //Encoding phone book to container
     encodeContainer.encode(book);
-    //Printing encoded content
     cout << encodeContainer.content << endl;
-    //Initializing JSON decoder
+
+    //Decoding
 	JSONDecoder decoder;
-    //Getting container for decoding of encoded content
 	auto container = decoder.container(encodeContainer.content);
-    //Decoding encoded content to variable
     auto decode_book = container.decode(PhoneBook());
-    //Checking decoded book
     if (!check_book(decode_book, book)) {
         return 1;
     }
-    //Printing all contacts' info
+
+    //Printing decoded info
     for (int i = 0; i < decode_book.contacts.size(); i++) {
         Contact contact = decode_book.contacts[i];
         if(i == 0) {
@@ -243,5 +226,6 @@ int main() {
         }
         cout << contact.name << " " << contact.phone_number.country_code << " " << contact.phone_number.number << endl;
     }
+    
 	return 0;
 }

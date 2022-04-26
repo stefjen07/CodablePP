@@ -13,16 +13,14 @@ enum class CoderType {
 class CoderContainer {
 public:
     CoderType type;
-    
-    //Virtual deconstructor for inheritance support
+
     virtual ~CoderContainer() {}
 };
 
 class Encoder {
 public:
     CoderType type;
-    
-    //Virtual deconstructor for inheritance support
+
     virtual ~Encoder() {}
 };
 
